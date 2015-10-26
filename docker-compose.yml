@@ -1,0 +1,18 @@
+ruby_gems:
+  image: ruby
+  volumes:
+    - /usr/local/bundle
+  command: sh
+
+ruby:
+  image: ruby
+  volumes_from:
+    - ruby_gems
+  volumes:
+    - .:/app
+  ports:
+    - "9292:9292"
+  external_links:
+    - integrationtests_sqs_1:sqs
+  working_dir: /app
+
