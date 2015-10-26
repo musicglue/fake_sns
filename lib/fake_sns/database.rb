@@ -28,6 +28,10 @@ module FakeSNS
       @messages ||= MessageCollection.new(store)
     end
 
+    def sqs_config
+      @sqs_config ||= SqsConfig.new(store)
+    end
+
     def reset
       topics.reset
       subscriptions.reset
