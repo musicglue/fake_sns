@@ -17,21 +17,12 @@ module FakeSNS
         end
         @message_id = SecureRandom.uuid
 
-        db.messages.create(message_params)
-
-        config = {
-          "use_ssl"           => false,
-          "sqs_endpoint"      => "http://sqs",
-          "sqs_port"          => 80,
-          "access_key_id"     => "access_key_id",
-          "secret_access_key" => "secret_access_key",
-          "region"            => "us-east-1"
-        }
+        # db.messages.create(message_params)
         subscriptions_with(topic_arn).each do |sub|
           DeliverMessage.call(subscription: sub,
                               message: Message.new(message_params),
                               request: nil,
-                              config: config)
+                              config: db.sqs_config)
         end
       end
 

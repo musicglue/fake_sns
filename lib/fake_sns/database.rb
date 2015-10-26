@@ -29,7 +29,7 @@ module FakeSNS
     end
 
     def sqs_config
-      @sqs_config ||= SqsConfig.new(store)
+      @sqs_config || store['sqs_config']
     end
 
     def reset
