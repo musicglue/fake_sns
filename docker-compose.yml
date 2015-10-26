@@ -1,3 +1,8 @@
+sqs:
+  image: visenze/elasticmq
+  ports:
+    - "80"
+
 ruby_gems:
   image: ruby
   volumes:
@@ -12,7 +17,7 @@ ruby:
     - .:/app
   ports:
     - "9292:9292"
-  external_links:
-    - integrationtests_sqs_1:sqs
+  links:
+    - sqs:sqs
   working_dir: /app
 
