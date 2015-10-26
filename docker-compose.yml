@@ -1,0 +1,23 @@
+sqs:
+  image: visenze/elasticmq
+  ports:
+    - "80"
+
+ruby_gems:
+  image: ruby
+  volumes:
+    - /usr/local/bundle
+  command: sh
+
+ruby:
+  image: ruby
+  volumes_from:
+    - ruby_gems
+  volumes:
+    - .:/app
+  ports:
+    - "9292:9292"
+  links:
+    - sqs:sqs
+  working_dir: /app
+
