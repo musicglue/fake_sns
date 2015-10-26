@@ -23,6 +23,7 @@ module FakeSNS
     attribute :message, json
 
     def message_for_protocol(type)
+      return message if message.is_a? String
       message.fetch(type.to_s) { message.fetch("default") }
     end
 
