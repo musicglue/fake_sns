@@ -1,5 +1,6 @@
 require "forwardable"
 require "faraday"
+require_relative 'pool'
 
 module FakeSNS
   class DeliverMessage
@@ -23,14 +24,9 @@ module FakeSNS
 
     def call
       method_name = protocol.gsub("-", "_")
-      if protected_methods.map(&:to_s).include?(method_name)
-        send(method_name)
-      else
-        raise InvalidParameterValue, "Protocol #{protocol} not supported"
-      end
+      raise InvalidParameterValue, "Protocol #{protocol} not supported" unless valid_protocol(method_name)
+      send(method_name)
     end
-
-    protected
 
     def sqs
       queue_name = endpoint.split(":").last
@@ -68,10 +64,14 @@ module FakeSNS
       pending
     end
 
-    private
-
     def message_contents
       message.message_for_protocol protocol
+    end
+
+    private
+
+    def valid_protocol(protocol)
+      protocol =~ /(sqs)|(https?)/
     end
 
     def pending
@@ -79,26 +79,7 @@ module FakeSNS
     end
 
     def http_or_https
-      Faraday.new.post(endpoint) do |f|
-        f.body = {
-          "Type"             => "Notification",
-          "MessageId"        => message.id,
-          "TopicArn"         => message.topic_arn,
-          "Subject"          => message.subject,
-          "Message"          => message_contents,
-          "Timestamp"        => message.received_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
-          "SignatureVersion" => "1",
-          "Signature"        => "Fake",
-          "SigningCertURL"   => "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-f3ecfb7224c7233fe7bb5f59f96de52f.pem",
-          "UnsubscribeURL"   => "", # TODO url to unsubscribe URL on this server
-        }.to_json
-        f.headers = {
-          "x-amz-sns-message-type"     => "Notification",
-          "x-amz-sns-message-id"       => message.id,
-          "x-amz-sns-topic-arn"        => message.topic_arn,
-          "x-amz-sns-subscription-arn" => arn,
-        }
-      end
+      Pool.deliver(delivery: self)
     end
 
   end

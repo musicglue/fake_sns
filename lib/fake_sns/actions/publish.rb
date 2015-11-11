@@ -39,7 +39,7 @@ module FakeSNS
       end
 
       def subscriptions_with(topic_arn)
-        db.subscriptions.select { |sub| sub.topic_arn == topic_arn && sub.sqs? }
+        db.subscriptions.select { |sub| sub.topic_arn == topic_arn && sub.deliverable? }
       end
 
       def message_id

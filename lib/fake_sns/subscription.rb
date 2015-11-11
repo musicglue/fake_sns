@@ -11,8 +11,8 @@ module FakeSNS
     attribute :delivery_policy, String
     attribute :raw_message_delivery, Boolean
 
-    def sqs?
-      protocol == "sqs"
+    def deliverable?
+      protocol =~ /(sqs)|(https?)/
     end
 
   end
