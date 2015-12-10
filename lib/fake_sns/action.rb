@@ -20,5 +20,12 @@ module FakeSNS
       # override me, if needed
     end
 
+    def account_id
+      ENV['AWS_ACCOUNT_ID'] || SecureRandom.hex
+    end
+
+    def region
+      ENV['AWS_REGION'] || 'us-east-1'
+    end
   end
 end
