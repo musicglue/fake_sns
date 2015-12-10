@@ -24,7 +24,7 @@ module FakeSNS
 
     def message_for_protocol(type)
       return message if message.is_a? String
-      message.fetch(type.to_s) { message.fetch("default") }
+      message.fetch(type.to_s) { message.fetch("default", JSON.generate(message)) }
     end
 
   end
