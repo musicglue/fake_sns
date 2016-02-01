@@ -25,7 +25,9 @@ module FakeSNS
           "MessageId"        => delivery.message.id,
           "TopicArn"         => delivery.message.topic_arn,
           "Subject"          => delivery.message.subject,
-          "Message"          => Oj.dump(delivery.message.message_for_protocol(delivery.protocol)),
+          "Message"          => {
+            "default" => Oj.dump(delivery.message.message_for_protocol(delivery.protocol))
+          },
           "Timestamp"        => delivery.message.received_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
           "SignatureVersion" => "1",
           "Signature"        => "Fake",
