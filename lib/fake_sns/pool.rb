@@ -37,7 +37,8 @@ module FakeSNS
           "x-amz-sns-message-id"       => delivery.message.id,
           "x-amz-sns-topic-arn"        => delivery.message.topic_arn,
           "x-amz-sns-subscription-arn" => delivery.arn,
-          "content-type"               => "text/plain; charset=utf-8"
+          "content-type"               => "text/plain; charset=utf-8",
+          "user-agent"                 => "Amazon Simple Notification Service Agent"
         })
       end
       if resp.status.to_s != "200"
@@ -60,7 +61,10 @@ module FakeSNS
          (u.scheme == 'https' && u.port != 443)
         hoststring = "#{hoststring}:#{u.port}"
       end
-      conn = Faraday.new(hoststring)
+      conn = Faraday.new(hoststring) do |c|
+        c.use Faraday::Response::Logger
+        c.use Faraday::Adapter::NetHttp
+      end
       conn.basic_auth(u.user, u.password) if u.user && u.password
       conn.post(u.path, &block)
     end
