@@ -1,4 +1,5 @@
 require 'celluloid/current'
+require 'oj'
 
 module FakeSNS
   class Pool
@@ -24,7 +25,7 @@ module FakeSNS
           "MessageId"        => delivery.message.id,
           "TopicArn"         => delivery.message.topic_arn,
           "Subject"          => delivery.message.subject,
-          "Message"          => delivery.message.message_for_protocol(delivery.protocol),
+          "Message"          => Oj.dump(delivery.message.message_for_protocol(delivery.protocol)),
           "Timestamp"        => delivery.message.received_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
           "SignatureVersion" => "1",
           "Signature"        => "Fake",
@@ -36,7 +37,7 @@ module FakeSNS
           "x-amz-sns-message-id"       => delivery.message.id,
           "x-amz-sns-topic-arn"        => delivery.message.topic_arn,
           "x-amz-sns-subscription-arn" => delivery.arn,
-          "content-type"               => "application/json"
+          "content-type"               => "text/plain; charset=utf-8"
         })
       end
       if resp.status.to_s != "200"
