@@ -43,7 +43,7 @@ module FakeSNS
           "user-agent"                 => "Amazon Simple Notification Service Agent"
         })
       end
-      if resp.status.to_s != "200"
+      if !resp.success?
         log "Delivery failed with status #{resp.status}"
       else
         log "Delivery succeeded"
