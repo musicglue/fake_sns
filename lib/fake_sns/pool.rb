@@ -45,6 +45,7 @@ module FakeSNS
       end
       if !resp.success?
         log "Delivery failed with status #{resp.status}"
+        log resp.body
       else
         log "Delivery succeeded"
       end
