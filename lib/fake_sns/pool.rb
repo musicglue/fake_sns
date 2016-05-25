@@ -62,7 +62,7 @@ module FakeSNS
          (u.scheme == 'https' && u.port != 443)
         hoststring = "#{hoststring}:#{u.port}"
       end
-      conn = Faraday.new(hoststring) do |c|
+      conn = Faraday.new(hoststring, ssl: { verify: false }) do |c|
         c.use Faraday::Response::Logger
         c.use Faraday::Adapter::NetHttp
       end
