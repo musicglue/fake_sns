@@ -46,7 +46,7 @@ parser = OptionParser.new do |o|
     options[:daemonize] = daemonize
   end
 
-  o.on "-v", "--[no]-verbose", "Shows input parameters and output XML" do |verbose|
+  o.on "-v", "--[no-]verbose", "Shows input parameters and output XML" do |verbose|
     options[:verbose] = verbose
   end
 
