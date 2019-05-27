@@ -1,4 +1,4 @@
-require "yaml/store"
+require 'yaml/store'
 
 module FakeSNS
 
@@ -59,8 +59,10 @@ module FakeSNS
     end
 
     def transaction
-      storage.transaction do
-        yield
+      mutex.synchronize do
+        storage.transaction do
+          yield
+        end
       end
     end
 
@@ -68,6 +70,10 @@ module FakeSNS
       File.open(@database_filename, "w:utf-8") do |f|
         f.write(data)
       end
+    end
+    
+    def mutex
+      @mutex ||= Mutex.new
     end
 
   end
